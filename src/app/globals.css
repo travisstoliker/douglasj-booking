@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-lato);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background: #ffffff;
+    color: #333333;
+    font-family: var(--font-lato), 'Lato', sans-serif;
+  }
+}
+
+/* === Douglas J Booking Theme === */
+:root {
+  --dj-teal: #5ca0a6;
+  --dj-teal-dark: #4a8d93;
+  --dj-teal-light: #7ab8bd;
+  --dj-teal-muted: rgba(92, 160, 166, 0.12);
+  --dj-purple: #b560f2;
+  --dj-purple-light: #c580f5;
+  --dj-purple-muted: rgba(181, 96, 242, 0.1);
+  --dj-text: #333333;
+  --dj-text-muted: #777777;
+  --dj-text-light: #999999;
+  --dj-bg: #ffffff;
+  --dj-bg-gray: #e7e6e7;
+  --dj-bg-light: #f8f8f8;
+  --dj-border: #e0e0e0;
+  --dj-border-light: #eeeeee;
+  --font-lato: var(--font-lato);
+}
+
+/* Fade-in animations */
+@keyframes dj-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dj-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dj-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.dj-fade-up {
+  animation: dj-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dj-stagger > * {
+  opacity: 0;
+  animation: dj-fade-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.dj-stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.dj-stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.dj-stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.dj-stagger > *:nth-child(4) { animation-delay: 0.16s; }
+.dj-stagger > *:nth-child(5) { animation-delay: 0.2s; }
+.dj-stagger > *:nth-child(6) { animation-delay: 0.24s; }
+.dj-stagger > *:nth-child(7) { animation-delay: 0.28s; }
+.dj-stagger > *:nth-child(8) { animation-delay: 0.32s; }
+.dj-stagger > *:nth-child(9) { animation-delay: 0.36s; }
+.dj-stagger > *:nth-child(10) { animation-delay: 0.4s; }
+
+/* Hide scrollbar for carousels */
+.dj-scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+.dj-scroll-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Category tab active state */
+.dj-tab-active {
+  background: var(--dj-teal) !important;
+  color: #ffffff !important;
+  border-color: var(--dj-teal) !important;
+}
+
+/* Accordion chevron rotation */
+.dj-accordion-open .dj-chevron {
+  transform: rotate(180deg);
+}
