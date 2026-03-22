@@ -973,11 +973,15 @@ function ServiceRow({
 
   return (
     <div
-      className="flex items-start gap-3 px-3 py-3 transition-colors"
+      className="flex items-start gap-3 px-3 py-3 transition-colors cursor-pointer hover:bg-gray-50"
       style={{
         borderBottom: "1px solid var(--dj-border-light)",
         backgroundColor: isSelected ? "var(--dj-teal-muted)" : "transparent",
         opacity: service.requiresConsult ? 0.5 : 1,
+        cursor: service.requiresConsult ? "not-allowed" : "pointer",
+      }}
+      onClick={() => {
+        if (!service.requiresConsult) onToggle();
       }}
     >
       <div className="flex-1 min-w-0">
