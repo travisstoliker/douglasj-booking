@@ -60,8 +60,7 @@ export default function BookingLayout({
         style={{
           backgroundImage: `url(${BACKGROUND_IMAGE_URL})`,
           backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
+          backgroundPosition: "center top",
         }}
       >
         {/* Main two-column layout */}

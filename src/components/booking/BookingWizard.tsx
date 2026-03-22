@@ -62,10 +62,18 @@ type Props = {
 
 const STEPS = ["Services", "Provider", "Date & Time", "Your Info", "Confirm"];
 
+const LOCATIONS = [
+  { id: "okemos", name: "SALON & MEDSPA OKEMOS", address: "4663 Ardmore Ave, Okemos, MI 48864" },
+  { id: "east-lansing", name: "SALON & SPA EAST LANSING", address: "301 MAC Ave, East Lansing, MI 48823" },
+  { id: "ann-arbor", name: "AVEDA INSTITUTE ANN ARBOR", address: "3851 Research Park Dr, Ann Arbor, MI 48108" },
+  { id: "chicago", name: "AVEDA INSTITUTE CHICAGO", address: "828 W North Ave, Chicago, IL 60642" },
+  { id: "royal-oak", name: "SALON ROYAL OAK", address: "30950 Woodward Ave, Royal Oak, MI 48073" },
+];
+
 const POPULAR_SERVICES = [
-  { id: "bw5", name: "Reboot IV", description: "Recover fast — alleviates nausea, headaches and dehydration. Vita...", price: 200 },
-  { id: "b1", name: "Barber Haircut", description: "Includes a stress-relieving scalp and shoulder massage, hot towel ritual, shampoo, p...", price: 35 },
-  { id: "bw1", name: "Aroma Massage", description: "A relaxing full-body massage with Aveda essential oils to melt away tension...", price: 106 },
+  { id: "bw5", name: "Reboot IV", shortDesc: "Recover fast — alleviates nausea, headaches and dehydration. Vita...", fullDesc: "Recover fast — alleviates nausea, headaches and dehydration. Vitamins and minerals to help you bounce back. IV drip therapy administered by our licensed professionals.", price: 200 },
+  { id: "b1", name: "Barber Haircut", shortDesc: "Includes a stress-relieving scalp and shoulder massage, hot towel ritual, shampoo, p...", fullDesc: "Includes a stress-relieving scalp and shoulder massage, hot towel ritual, shampoo, precision cut and professional styling finish.", price: 35 },
+  { id: "bw1", name: "Aroma Massage", shortDesc: "A relaxing full-body massage with Aveda essential oils to melt away tension...", fullDesc: "A relaxing full-body massage with Aveda essential oils to melt away tension. 60 minutes of therapeutic bodywork customized to your needs.", price: 106 },
 ];
 
 export function BookingWizard({ categories, staff }: Props) {
@@ -81,6 +89,9 @@ export function BookingWizard({ categories, staff }: Props) {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [openSubcategories, setOpenSubcategories] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState(LOCATIONS[0]);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
+  const [expandedPopular, setExpandedPopular] = useState<string[]>([]);
 
   // Step 2: Provider
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
@@ -269,15 +280,69 @@ export function BookingWizard({ categories, staff }: Props) {
               style={{ border: "1px solid var(--dj-border)" }}
             >
               <span className="text-sm font-medium" style={{ color: "var(--dj-text)" }}>
-                SALON &amp; MEDSPA OKEMOS
+                {selectedLocation.name}
               </span>
               <button
+                onClick={() => setShowLocationPicker(true)}
                 className="text-sm font-medium"
                 style={{ color: "var(--dj-teal)" }}
               >
                 Change Location
               </button>
             </div>
+
+            {/* Location Picker Modal */}
+            {showLocationPicker && (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center"
+                style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                onClick={() => setShowLocationPicker(false)}
+              >
+                <div
+                  className="rounded-lg p-6 max-w-md w-full mx-4"
+                  style={{ backgroundColor: "#ffffff", border: "1px solid var(--dj-border)" }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h3 className="text-lg font-bold mb-4" style={{ color: "var(--dj-text)" }}>
+                    Select Location
+                  </h3>
+                  <div className="space-y-2">
+                    {LOCATIONS.map((loc) => (
+                      <button
+                        key={loc.id}
+                        onClick={() => {
+                          setSelectedLocation(loc);
+                          setShowLocationPicker(false);
+                        }}
+                        className="w-full text-left p-3 rounded transition-colors"
+                        style={{
+                          border: selectedLocation.id === loc.id
+                            ? "2px solid var(--dj-teal)"
+                            : "1px solid var(--dj-border)",
+                          backgroundColor: selectedLocation.id === loc.id
+                            ? "var(--dj-teal-muted)"
+                            : "transparent",
+                        }}
+                      >
+                        <p className="text-sm font-bold" style={{ color: "var(--dj-text)" }}>
+                          {loc.name}
+                        </p>
+                        <p className="text-xs" style={{ color: "var(--dj-text-muted)" }}>
+                          {loc.address}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowLocationPicker(false)}
+                    className="w-full mt-4 py-2 rounded text-sm font-bold"
+                    style={{ border: "1px solid var(--dj-border)", color: "var(--dj-text-muted)" }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Appointment For */}
@@ -337,12 +402,20 @@ export function BookingWizard({ categories, staff }: Props) {
                         {ps.name}
                       </h4>
                       <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--dj-text-muted)" }}>
-                        {ps.description}{" "}
+                        {expandedPopular.includes(ps.id) ? ps.fullDesc : ps.shortDesc}{" "}
                         <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandedPopular((prev) =>
+                              prev.includes(ps.id)
+                                ? prev.filter((id) => id !== ps.id)
+                                : [...prev, ps.id]
+                            );
+                          }}
                           className="font-medium"
                           style={{ color: "var(--dj-purple)" }}
                         >
-                          more
+                          {expandedPopular.includes(ps.id) ? "less" : "more"}
                         </button>
                       </p>
                     </div>
