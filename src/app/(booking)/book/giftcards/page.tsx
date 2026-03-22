@@ -16,6 +16,20 @@ export default function GiftCardsPage() {
   const [recipientEmail, setRecipientEmail] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const selectedCard = GIFT_CARDS.find((gc) => gc.id === selected);
+
+  function handleCheckout() {
+    if (recipientName && recipientEmail && selectedCard) {
+      setShowConfirmation(true);
+    }
+  }
+
+  function handleConfirm() {
+    setShowConfirmation(false);
+    setSubmitted(true);
+  }
 
   return (
     <div className="max-w-2xl mx-auto py-6">
@@ -97,13 +111,44 @@ export default function GiftCardsPage() {
                 style={{ border: "1px solid var(--dj-border)", color: "var(--dj-text)" }}
               />
               <button
-                onClick={() => { if (recipientName && recipientEmail) setSubmitted(true); }}
+                onClick={handleCheckout}
                 disabled={!recipientName || !recipientEmail}
                 className="w-full py-3 rounded text-sm font-bold text-white transition-colors hover:opacity-90 disabled:opacity-40"
                 style={{ backgroundColor: "var(--dj-teal)" }}
               >
                 Continue to Checkout
               </button>
+            </div>
+          )}
+
+          {/* Confirmation Modal */}
+          {showConfirmation && selectedCard && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+              <div className="rounded-lg p-6 max-w-sm w-full mx-4" style={{ backgroundColor: "var(--dj-bg, #ffffff)", border: "1px solid var(--dj-border)" }}>
+                <h3 className="text-lg font-bold mb-4" style={{ color: "var(--dj-text)" }}>Confirm Gift Card</h3>
+                <div className="space-y-2 text-sm mb-6" style={{ color: "var(--dj-text-muted)" }}>
+                  <p><strong style={{ color: "var(--dj-text)" }}>Gift Card:</strong> {selectedCard.name} - ${selectedCard.amount}</p>
+                  <p><strong style={{ color: "var(--dj-text)" }}>Recipient:</strong> {recipientName}</p>
+                  <p><strong style={{ color: "var(--dj-text)" }}>Email:</strong> {recipientEmail}</p>
+                  {message && <p><strong style={{ color: "var(--dj-text)" }}>Message:</strong> {message}</p>}
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowConfirmation(false)}
+                    className="flex-1 py-2.5 rounded text-sm font-bold"
+                    style={{ border: "1px solid var(--dj-border)", color: "var(--dj-text-muted)" }}
+                  >
+                    Go Back
+                  </button>
+                  <button
+                    onClick={handleConfirm}
+                    className="flex-1 py-2.5 rounded text-sm font-bold text-white"
+                    style={{ backgroundColor: "var(--dj-teal)" }}
+                  >
+                    Confirm & Send
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </>

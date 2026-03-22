@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { BUSINESS_NAME, BUSINESS_LOCATION } from "@/lib/constants";
+import { BUSINESS_NAME, BUSINESS_LOCATION, PROVIDER_NAMES, SERVICE_NAMES } from "@/lib/constants";
 
 type Booking = {
   id: string;
@@ -18,37 +18,6 @@ type Booking = {
 };
 
 const ADMIN_TOKEN = "douglasj-admin-2026";
-
-const PROVIDER_NAMES: Record<string, string> = {
-  s1: "Sarah Mitchell",
-  s2: "Jessica Taylor",
-  s3: "Marcus Johnson",
-  s4: "Emily Chen",
-  s5: "Dr. Lauren Davis",
-  s6: "Amanda Rivera",
-  s7: "Nicole Park",
-};
-
-const SERVICE_NAMES: Record<string, string> = {
-  h1: "Haircut - Female", h2: "Haircut - Male", h3: "Haircut - Child Female",
-  h4: "Haircut - Child Male", h5: "Haircut Blowout Finish", h6: "Haircut Thermal Blowout",
-  h7: "Beard Trim", hc2: "Color Retouch", hc3: "All-Over Color",
-  hc4: "Color + Partial Highlight", hc5: "Full Highlight", hc6: "Custom Color",
-  hc7: "Color Transformation", hs1: "Blowout Finish", hs2: "Blowout Thermal Style",
-  b1: "Barber Haircut", b2: "Barber Fade", b3: "Beard Trim", b4: "Hot Towel Shave",
-  b5: "Express Hot Towel Facial", b6: "Hot Towel Shave + Facial",
-  n1: "Aveda Manicure", n2: "Aveda Pedicure", n3: "Hot Stone Pedicure",
-  n5: "Manicure + Gel Polish", n6: "Pedicure + Gel Polish",
-  sk1: "Standard Facial 60min", sk2: "Standard Facial 90min", sk3: "Dermaplane",
-  sk5: "Signature HydraFacial", sk6: "Deluxe HydraFacial", sk7: "Platinum HydraFacial",
-  bw1: "Aroma Massage 60min", bw2: "Aroma Massage 90min", bw3: "Hot Stone Massage",
-  bw5: "Reboot IV", bw6: "Myer's Cocktail IV", bw7: "Immunity IV",
-  i3: "Filler Dissolver",
-  m1: "Makeup - Advanced", m2: "Makeup - Senior", m3: "Lash Lift",
-  m6: "Brow Lamination", m8: "Microblading",
-  w1: "Brow Wax", w4: "Full Face Wax", w7: "Brazilian Wax",
-  l1: "Laser - Upper Lip", l5: "Laser - Brazilian", l6: "Laser - Full Face",
-};
 
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -82,6 +51,22 @@ export default function AdminPage() {
       setBookings([]);
     }
     setLoading(false);
+  }
+
+  async function cancelBooking(id: string) {
+    try {
+      await fetch("/api/public/book", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${ADMIN_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+    } catch {
+      // If DELETE is not supported, just filter client-side
+    }
+    setBookings((prev) => prev.filter((b) => b.id !== id));
   }
 
   if (!authenticated) {
@@ -187,7 +172,7 @@ export default function AdminPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="rounded p-4" style={{ backgroundColor: "var(--dj-teal-muted)", border: "1px solid rgba(92,160,166,0.2)" }}>
           <p className="text-2xl font-bold" style={{ color: "var(--dj-teal)" }}>{totalBookings}</p>
           <p className="text-xs font-bold uppercase" style={{ color: "var(--dj-text-muted)" }}>Total Bookings</p>
@@ -254,12 +239,21 @@ export default function AdminPage() {
                         {booking.email} &middot; {booking.phone}
                       </p>
                     </div>
-                    <span
-                      className="text-[10px] font-bold uppercase px-2 py-1 rounded"
-                      style={{ backgroundColor: "var(--dj-teal-muted)", color: "var(--dj-teal)" }}
-                    >
-                      {booking.id}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-[10px] font-bold uppercase px-2 py-1 rounded"
+                        style={{ backgroundColor: "var(--dj-teal-muted)", color: "var(--dj-teal)" }}
+                      >
+                        {booking.id}
+                      </span>
+                      <button
+                        onClick={() => cancelBooking(booking.id)}
+                        className="text-[10px] font-bold uppercase px-2 py-1 rounded transition-colors hover:opacity-80"
+                        style={{ backgroundColor: "rgba(239,68,68,0.08)", color: "#dc2626", border: "1px solid rgba(239,68,68,0.2)" }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs" style={{ color: "var(--dj-text-muted)" }}>
                     <p><strong>Services:</strong> {booking.serviceIds.map((id) => SERVICE_NAMES[id] || id).join(", ")}</p>

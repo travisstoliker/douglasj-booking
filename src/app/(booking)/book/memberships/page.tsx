@@ -48,6 +48,46 @@ const MEMBERSHIPS = [
 
 export default function MembershipsPage() {
   const [selected, setSelected] = useState<string | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  const selectedMembership = MEMBERSHIPS.find((m) => m.id === selected);
+
+  function handleCheckout() {
+    if (selected) {
+      setSubmitted(true);
+    }
+  }
+
+  if (submitted && selectedMembership) {
+    return (
+      <div className="py-6">
+        <div className="max-w-md mx-auto text-center py-12">
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            style={{ backgroundColor: "var(--dj-teal)" }}
+          >
+            <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold mb-2" style={{ color: "var(--dj-text)" }}>Membership Confirmed!</h2>
+          <p className="text-sm mb-1" style={{ color: "var(--dj-text-muted)" }}>
+            You have selected the <strong style={{ color: "var(--dj-text)" }}>{selectedMembership.name}</strong> plan at <strong style={{ color: "var(--dj-teal)" }}>${selectedMembership.price}/{selectedMembership.period}</strong>.
+          </p>
+          <p className="text-sm" style={{ color: "var(--dj-text-muted)" }}>
+            A confirmation email will be sent with your membership details.
+          </p>
+          <button
+            onClick={() => { setSubmitted(false); setSelected(null); }}
+            className="mt-4 px-6 py-2 rounded text-sm font-bold"
+            style={{ border: "1px solid var(--dj-teal)", color: "var(--dj-teal)" }}
+          >
+            View Plans Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-6">
@@ -111,6 +151,7 @@ export default function MembershipsPage() {
       {selected && (
         <div className="mt-6 text-center">
           <button
+            onClick={handleCheckout}
             className="px-8 py-3 rounded text-sm font-bold text-white"
             style={{ backgroundColor: "var(--dj-teal)" }}
           >
