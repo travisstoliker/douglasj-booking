@@ -63,9 +63,9 @@ type Props = {
 const STEPS = ["Services", "Provider", "Date & Time", "Your Info", "Confirm"];
 
 const POPULAR_SERVICES = [
-  { name: "Reboot IV", description: "Recover fast — alleviates nausea, headaches and dehydration. Vita...", price: 200 },
-  { name: "Barber Haircut", description: "Includes a stress-relieving scalp and shoulder massage, hot towel ritual, shampoo, p...", price: 35 },
-  { name: "Aroma Massage", description: "A relaxing full-body massage with Aveda essential oils to melt away tension...", price: 106 },
+  { id: "bw5", name: "Reboot IV", description: "Recover fast — alleviates nausea, headaches and dehydration. Vita...", price: 200 },
+  { id: "b1", name: "Barber Haircut", description: "Includes a stress-relieving scalp and shoulder massage, hot towel ritual, shampoo, p...", price: 35 },
+  { id: "bw1", name: "Aroma Massage", description: "A relaxing full-body massage with Aveda essential oils to melt away tension...", price: 106 },
 ];
 
 export function BookingWizard({ categories, staff }: Props) {
@@ -316,46 +316,55 @@ export function BookingWizard({ categories, staff }: Props) {
               POPULAR SERVICES
             </h3>
             <div className="dj-scroll-hide flex gap-4 overflow-x-auto pb-2">
-              {POPULAR_SERVICES.map((ps) => (
-                <div
-                  key={ps.name}
-                  className="flex-shrink-0 w-[260px] rounded p-4 flex flex-col justify-between"
-                  style={{ border: "1px solid var(--dj-border)" }}
-                >
-                  <div>
-                    <h4
-                      className="text-sm font-bold mb-1"
-                      style={{ color: "var(--dj-text)" }}
-                    >
-                      {ps.name}
-                    </h4>
-                    <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--dj-text-muted)" }}>
-                      {ps.description}{" "}
-                      <button
-                        className="font-medium"
-                        style={{ color: "var(--dj-purple)" }}
+              {POPULAR_SERVICES.map((ps) => {
+                const isSelected = selectedServices.includes(ps.id);
+                return (
+                  <div
+                    key={ps.name}
+                    className="flex-shrink-0 w-[260px] rounded p-4 flex flex-col justify-between"
+                    style={{
+                      border: isSelected
+                        ? "2px solid var(--dj-teal)"
+                        : "1px solid var(--dj-border)",
+                      backgroundColor: isSelected ? "var(--dj-teal-muted)" : "transparent",
+                    }}
+                  >
+                    <div>
+                      <h4
+                        className="text-sm font-bold mb-1"
+                        style={{ color: "var(--dj-text)" }}
                       >
-                        more
+                        {ps.name}
+                      </h4>
+                      <p className="text-xs leading-relaxed mb-3" style={{ color: "var(--dj-text-muted)" }}>
+                        {ps.description}{" "}
+                        <button
+                          className="font-medium"
+                          style={{ color: "var(--dj-purple)" }}
+                        >
+                          more
+                        </button>
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-base font-bold" style={{ color: "var(--dj-text)" }}>
+                        $ {ps.price}
+                      </span>
+                      <button
+                        onClick={() => toggleService(ps.id)}
+                        className="px-6 py-1.5 rounded text-sm font-medium transition-colors"
+                        style={{
+                          border: "1px solid var(--dj-teal)",
+                          color: isSelected ? "#ffffff" : "var(--dj-teal)",
+                          backgroundColor: isSelected ? "var(--dj-teal)" : "transparent",
+                        }}
+                      >
+                        {isSelected ? "Selected" : "Select"}
                       </button>
-                    </p>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-base font-bold" style={{ color: "var(--dj-text)" }}>
-                      $ {ps.price}
-                    </span>
-                    <button
-                      className="px-6 py-1.5 rounded text-sm font-medium"
-                      style={{
-                        border: "1px solid var(--dj-teal)",
-                        color: "var(--dj-teal)",
-                        background: "transparent",
-                      }}
-                    >
-                      Select
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
